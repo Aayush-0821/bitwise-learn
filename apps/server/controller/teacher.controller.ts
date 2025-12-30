@@ -40,6 +40,12 @@ class TeacherController {
                 if (!vendor) throw new Error("invalid vendor for institution");
             }
 
+            const existingTeacher = await prismaClient.teacher.findFirst({
+                where: { email: data.email }
+            })
+            if (existingTeacher) throw new Error("teacher with this email already exists");
+
+
             const hashedPassword = await hashPassword(data.loginPassword);
 
             const createdTeacher = await prismaClient.teacher.create({

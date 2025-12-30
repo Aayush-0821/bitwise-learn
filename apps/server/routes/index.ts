@@ -5,6 +5,7 @@ import institutionRoutes from "./institution.routes";
 import teacherRoutes from "./teacher.routes";
 import batchRoutes from "./batch.routes";
 import authRoutes from "./auth.routes";
+import vendorRoutes from "./vendor.routes";
 
 const router = Router();
 router.get("/ping", (req, res) => {
@@ -20,5 +21,6 @@ router.use("/institutions", institutionRoutes);
 
 router.use("/teachers", teacherRoutes);
 router.use("/batches", batchRoutes);
+router.use("/vendors", vendorRoutes);
 
 export default router;

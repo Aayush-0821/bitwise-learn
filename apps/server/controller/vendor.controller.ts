@@ -13,6 +13,10 @@ class VendorController {
             if (req.user.type !== "INSTITUTION") {
                 throw new Error("only institution can create vendors");
             }
+            const existingVendor = await prismaClient.vendor.findFirst({
+                where: { email: data.email }
+            })
+            if (existingVendor) throw new Error("vendor with this email already exists");
             const hashedPassword = await hashPassword(data.loginPassword);
 
             const createdVendor = await prismaClient.vendor.create({
@@ -25,7 +29,9 @@ class VendorController {
                     secondaryPhoneNumber: data.secondaryPhoneNumber ?? null,
                     websiteLink: data.websiteLink,
                     loginPassword: hashedPassword,
-                    institutionId: req.user.id,
+                    creator: {
+                        connect: { id: req.user.id },
+                    },
                 },
             });
 
@@ -161,11 +167,13 @@ class VendorController {
                     id: true,
                     name: true,
                     email: true,
+                    institutionId: true,
                     phoneNumber: true,
                     createdAt: true,
                     updatedAt: true,
                 },
             });
+            console.log("Institution Id is: ", vendor.institutionId);
             if (vendor.institutionId !== institutionId) {
                 throw new Error("this vendor does not belong to this institution");
             }

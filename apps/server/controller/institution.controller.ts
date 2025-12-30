@@ -22,6 +22,10 @@ class InstitutionController {
             if (dbAdmin.ROLE !== "ADMIN" && dbAdmin.ROLE !== "SUPERADMIN") {
                 throw new Error("only admin/superadmin can view institutions");
             }
+            const existingInstitute = await prismaClient.institution.findFirst({
+                where: { email: data.email }
+            })
+            if (existingInstitute) throw new Error("Institute with this email already exists");
             const hashedPassword = await hashPassword(data.loginPassword);
 
             const createdInstitution = await prismaClient.institution.create({
