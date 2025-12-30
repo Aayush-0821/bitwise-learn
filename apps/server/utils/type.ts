@@ -187,3 +187,13 @@ export interface UpdateTeacherBody {
   batchId?: string;
   vendorId?: string;
 }
+export interface CreateBatchBody {
+  batchname: string;
+  branch: string;
+  batchEndYear: string;
+}
+export interface UpdateBatchBody {
+  batchname?: string;
+  branch?: string;
+  batchEndYear?: string;
+}

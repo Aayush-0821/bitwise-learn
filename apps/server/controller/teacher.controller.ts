@@ -13,11 +13,6 @@ class TeacherController {
 
             const userId = req.user.id;
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-
-            if (!dbUser) throw new Error("no such user found!");
 
             if (req.user.type !== "INSTITUTION" && req.user.type !== "VENDOR") {
                 throw new Error("only institution or vendor can create teachers");
@@ -79,10 +74,6 @@ class TeacherController {
 
             if (!teacherId) throw new Error("teacher id is required");
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
 
             if (req.user.type !== "INSTITUTION" && req.user.type !== "VENDOR") {
                 throw new Error("only institution or vendor can update teachers");
@@ -145,11 +136,6 @@ class TeacherController {
 
             if (!teacherId) throw new Error("teacher id is required");
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
-
             if (req.user.type !== "INSTITUTION" && req.user.type !== "VENDOR") {
                 throw new Error("only institution or vendor can delete teachers");
             }
@@ -185,11 +171,6 @@ class TeacherController {
         try {
             if (!req.user) throw new Error("user is not authenticated");
             const userId = req.user.id;
-
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
 
             let whereClause: any = {};
 

@@ -19,7 +19,8 @@ class AuthController {
             });
 
             if (!admin) throw new Error("invalid credentials");
-
+            console.log("password is ", password);
+            console.log("your password is ", admin.password);
             const isValid = await comparePassword(password, admin.password);
             if (!isValid) throw new Error("invalid credentials");
 

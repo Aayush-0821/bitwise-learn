@@ -144,7 +144,7 @@ class InstitutionController {
                 },
             });
             if (!institution) throw new Error("institution not found");
-            const deletedInstitution = await prismaClient.user.delete({
+            const deletedInstitution = await prismaClient.institution.delete({
                 where: { id: institutionId },
             });
             if (!deletedInstitution) throw new Error("Error deleting institution");
