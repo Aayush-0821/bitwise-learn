@@ -18,6 +18,12 @@ enum COURSE_LEVEL {
   ADVANCE
 }
 
+enum PROBLEM_LEVEL {
+  EASY
+  MEDIUM
+  HARD
+}
+
 enum ASSIGNMENT_TYPE {
   MCQ
   SCQ
@@ -94,10 +100,10 @@ model Vendor {
   id                   String      @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
   email                String
-  secondaryEmail       String
+  secondaryEmail       String?
   tagline              String
   phoneNumber          String
-  secondaryPhoneNumber String
+  secondaryPhoneNumber String?
   websiteLink          String
   loginPassword        String
   institutionId        String      @db.ObjectId
@@ -126,9 +132,9 @@ model Teacher {
   email         String
   phoneNumber   String
   loginPassword String
-  vendorId      String
+  vendorId      String?
   instituteId   String       @db.ObjectId
-  insitution    Institution  @relation(references: [id], fields: [instituteId])
+  institution   Institution  @relation(references: [id], fields: [instituteId])
   batchId       String       @db.ObjectId
   batch         Batch        @relation(references: [id], fields: [batchId])
   assessments   Assessment[]
@@ -269,12 +275,13 @@ model CourseEnrollment {
 }
 
 model Problem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
   hints       String[]
-  createdBy   String   @db.ObjectId
-  creator     User     @relation(fields: [createdBy], references: [id])
+  difficulty  PROBLEM_LEVEL @default(EASY)
+  createdBy   String        @db.ObjectId
+  creator     User          @relation(fields: [createdBy], references: [id])
 
   sectionId String?         @db.ObjectId
   section   CourseSections? @relation(fields: [sectionId], references: [id])

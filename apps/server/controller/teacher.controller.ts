@@ -11,15 +11,9 @@ class TeacherController {
             const data: CreateTeacherBody = req.body;
             if (!data) throw new Error("please provide all required fields");
 
-            const userId = req.user.id;
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
 
-            if (!dbUser) throw new Error("no such user found!");
-
-            if (dbUser.ROLE !== "INSTITUTION" && dbUser.ROLE !== "VENDOR") {
+            if (req.user.type !== "INSTITUTION" && req.user.type !== "VENDOR") {
                 throw new Error("only institution or vendor can create teachers");
             }
 
@@ -36,15 +30,29 @@ class TeacherController {
             });
             if (!batch) throw new Error("batch does not belong to institution");
 
-            if (data.vendorId) {
+            // Logged-in user is a VENDOR
+            if (req.user.type === "VENDOR") {
                 const vendor = await prismaClient.vendor.findFirst({
-                    where: {
-                        id: data.vendorId,
-                        institutionId: data.instituteId,
-                    },
+                    where: { id: req.user.id },
+                    select: { id: true, institutionId: true },
                 });
-                if (!vendor) throw new Error("invalid vendor for institution");
+
+                if (!vendor) {
+                    throw new Error("vendor not found");
+                }
+
+                if (vendor.institutionId !== data.instituteId) {
+                    throw new Error("vendor does not belong to this institution");
+                }
+
             }
+
+
+            const existingTeacher = await prismaClient.teacher.findFirst({
+                where: { email: data.email }
+            })
+            if (existingTeacher) throw new Error("teacher with this email already exists");
+
 
             const hashedPassword = await hashPassword(data.loginPassword);
 
@@ -79,12 +87,8 @@ class TeacherController {
 
             if (!teacherId) throw new Error("teacher id is required");
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
 
-            if (dbUser.ROLE !== "INSTITUTION" && dbUser.ROLE !== "VENDOR") {
+            if (req.user.type !== "INSTITUTION" && req.user.type !== "VENDOR") {
                 throw new Error("only institution or vendor can update teachers");
             }
 
@@ -93,12 +97,13 @@ class TeacherController {
             });
             if (!teacher) throw new Error("teacher not found");
 
-            if (dbUser.ROLE === "INSTITUTION" && teacher.instituteId !== userId) {
-                throw new Error("not authorized");
+            // Check if teacher belongs to the institute
+            if (req.user.type === "INSTITUTION" && teacher.instituteId !== userId) {
+                throw new Error("teacher does not belongs to your institution");
             }
 
-            if (dbUser.ROLE === "VENDOR" && teacher.vendorId !== userId) {
-                throw new Error("not authorized");
+            else if (teacher.vendorId && req.user.type !== "VENDOR" && teacher.vendorId !== userId) {
+                throw new Error("teacher does not belongs to this vendor");
             }
 
             const updatedTeacher = await prismaClient.teacher.update({
@@ -144,12 +149,7 @@ class TeacherController {
 
             if (!teacherId) throw new Error("teacher id is required");
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
-
-            if (dbUser.ROLE !== "INSTITUTION" && dbUser.ROLE !== "VENDOR") {
+            if (req.user.type !== "INSTITUTION" && req.user.type !== "VENDOR") {
                 throw new Error("only institution or vendor can delete teachers");
             }
 
@@ -158,21 +158,27 @@ class TeacherController {
             });
             if (!teacher) throw new Error("teacher not found");
 
-            if (dbUser.ROLE === "INSTITUTION" && teacher.instituteId !== userId) {
-                throw new Error("not authorized");
+            // Code to be debugged
+
+            if (req.user.type === "INSTITUTION" && teacher.instituteId !== userId) {
+                throw new Error("teacher does not belongs to this institution");
             }
 
-            if (dbUser.ROLE === "VENDOR" && teacher.vendorId !== userId) {
+            else if (req.user.type !== "VENDOR" && teacher.vendorId !== userId) {
                 throw new Error("not authorized");
             }
+            // else if (teacher.vendorId && req.user.type !== "VENDOR" && teacher.vendorId !== userId) {
+            //     throw new Error("not authorized");
+            // }
 
-            await prismaClient.teacher.delete({
+            const deletedTeacher = await prismaClient.teacher.delete({
                 where: { id: teacherId },
             });
+            if (!deletedTeacher) throw new Error("Error deleting teacher");
 
             return res
                 .status(200)
-                .json(apiResponse(200, "teacher deleted successfully", teacher));
+                .json(apiResponse(200, "teacher deleted successfully", deletedTeacher));
         } catch (error: any) {
             console.log(error);
             return res.status(200).json(apiResponse(200, error.message, null));
@@ -184,26 +190,21 @@ class TeacherController {
             if (!req.user) throw new Error("user is not authenticated");
             const userId = req.user.id;
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
-
             let whereClause: any = {};
 
-            if (dbUser.ROLE === "INSTITUTION") {
+            if (req.user.type === "INSTITUTION") {
                 whereClause = { instituteId: userId };
             }
 
-            if (dbUser.ROLE === "VENDOR") {
+            if (req.user.type === "VENDOR") {
                 whereClause = { vendorId: userId };
             }
 
             if (
-                dbUser.ROLE !== "SUPERADMIN" &&
-                dbUser.ROLE !== "ADMIN" &&
-                dbUser.ROLE !== "INSTITUTION" &&
-                dbUser.ROLE !== "VENDOR"
+                req.user.type !== "SUPERADMIN" &&
+                req.user.type !== "ADMIN" &&
+                req.user.type !== "INSTITUTION" &&
+                req.user.type !== "VENDOR"
             ) {
                 throw new Error("not authorized to view teachers");
             }
@@ -240,29 +241,29 @@ class TeacherController {
 
             if (!teacherId) throw new Error("teacher id is required");
 
-            const dbUser = await prismaClient.user.findFirst({
-                where: { id: userId },
-            });
-            if (!dbUser) throw new Error("no such user found");
+            // const dbUser = await prismaClient.user.findFirst({
+            //     where: { id: userId },
+            // });
+            // if (!dbUser) throw new Error("no such user found");
 
             const teacher = await prismaClient.teacher.findFirst({
                 where: { id: teacherId },
             });
             if (!teacher) throw new Error("teacher not found");
 
-            if (dbUser.ROLE === "INSTITUTION" && teacher.instituteId !== userId) {
+            if (req.user.type === "INSTITUTION" && teacher.instituteId !== userId) {
                 throw new Error("not authorized to view this teacher");
             }
 
-            if (dbUser.ROLE === "VENDOR" && teacher.vendorId !== userId) {
+            if (req.user.type === "VENDOR" && teacher.vendorId !== userId) {
                 throw new Error("not authorized to view this teacher");
             }
 
             if (
-                dbUser.ROLE !== "SUPERADMIN" &&
-                dbUser.ROLE !== "ADMIN" &&
-                dbUser.ROLE !== "INSTITUTION" &&
-                dbUser.ROLE !== "VENDOR"
+                req.user.type !== "SUPERADMIN" &&
+                req.user.type !== "ADMIN" &&
+                req.user.type !== "INSTITUTION" &&
+                req.user.type !== "VENDOR"
             ) {
                 throw new Error("not authorized");
             }
