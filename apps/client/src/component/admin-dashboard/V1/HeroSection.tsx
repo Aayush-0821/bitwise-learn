@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAllAdmins } from "@/api/admins/get-all-admins";
-
+import { getAllInstitutions } from "@/api/institutions/get-all-institutions";
 type FieldType = "Admins" | "Partners" | "Institutions" | "Batches";
 
 type Item = {
@@ -30,21 +30,27 @@ export default function HeroSection() {
 
     /* ---------------- ENTITY STATES ---------------- */
     const [admins, setAdmins] = useState([]);
-
     useEffect(() => {
         getAllAdmins(setAdmins);
         console.log(admins);
 
     }, []);
+    const [institutions, setInstitutions] = useState([]);
+    useEffect(() => {
+        getAllInstitutions(setInstitutions);
+        console.log(institutions);
+
+    }, []);
+
     const [partners, setPartners] = useState<Item[]>([
         { id: 1, name: "Partner A" },
         { id: 2, name: "Partner B" },
     ]);
 
-    const [institutions, setInstitutions] = useState<Item[]>([
-        { id: 1, name: "Institution X" },
-        { id: 2, name: "Institution Y" },
-    ]);
+    // const [institutions, setInstitutions] = useState<Item[]>([
+    //     { id: 1, name: "Institution X" },
+    //     { id: 2, name: "Institution Y" },
+    // ]);
 
     const [batches, setBatches] = useState<Item[]>([
         { id: 1, name: "Batch 2024" },
