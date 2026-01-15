@@ -54,9 +54,14 @@ const colors = {
 
 export default function AdminCoursesV1() {
   return (
-    <div className={`${colors.primary_Bg} flex`}>
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar */}
       <SideBar />
-      <RightSection courses={dummyCourses} />
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto px-10 py-10">
+        <RightSection courses={dummyCourses}/>
+      </main>
     </div>
   );
 }
