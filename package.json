@@ -24,7 +24,9 @@
     "packages/*"
   ],
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "lucide-react": "^0.562.0",
+    "react-hot-toast": "^2.6.0",
     "react-md-editor": "^0.2.2",
     "uuid": "^13.0.0"
   }
