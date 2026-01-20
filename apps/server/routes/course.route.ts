@@ -63,6 +63,7 @@ router.post(
 router.put(
   "/update-course-section/:id",
   authMiddleware,
+  upload.none(),
   courseController.updateCourseSection,
 );
 router.delete(
@@ -85,6 +86,7 @@ router.delete(
 router.put(
   "/update-content-to-section/:id",
   authMiddleware,
+  upload.single("transcript"),
   courseContentController.updateContentToSection,
 );
 router.post(
