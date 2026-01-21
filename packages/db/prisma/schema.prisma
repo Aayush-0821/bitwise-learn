@@ -367,8 +367,8 @@ model Assessment {
   individualSectionTimeLimit Int?
   status                     ASSESSMENT_STATUS @default(UPCOMING)
 
-  instructorId String  @db.ObjectId
-  instructor   Teacher @relation(fields: [instructorId], references: [id])
+  creatorId   String @db.ObjectId
+  creatorType String @default("ADMIN")
 
   batchId String @db.ObjectId
   batch   Batch  @relation(fields: [batchId], references: [id])
@@ -377,15 +377,13 @@ model Assessment {
   submissions AssessmentSubmission[]
   createdAt   DateTime               @default(now())
   updatedAt   DateTime               @updatedAt
+  teacher     Teacher?               @relation(fields: [teacherId], references: [id])
+  teacherId   String?                @db.ObjectId
 }
 
 model AssessmentSection {
   id               String          @id @default(auto()) @map("_id") @db.ObjectId
   name             String
-  description      String
-  instruction      String
-  startTime        DateTime?
-  endTime          DateTime?
   marksPerQuestion Int
   assessmentType   ASSESSMENT_TYPE
 
@@ -398,9 +396,9 @@ model AssessmentSection {
 }
 
 model AssessmentQuestion {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  question String?
+  options  String[]
 
   sectionId String            @db.ObjectId
   section   AssessmentSection @relation(fields: [sectionId], references: [id])
@@ -409,7 +407,6 @@ model AssessmentQuestion {
   problem   Problem? @relation(fields: [problemId], references: [id])
 
   maxMarks                      Int
-  order                         Int
   assessmentQuestionSubmissions AssessmentQuestionSubmission[]
   createdAt                     DateTime                       @default(now())
   updatedAt                     DateTime                       @updatedAt
@@ -441,11 +438,10 @@ model AssessmentQuestionSubmission {
   questionId String             @db.ObjectId
   question   AssessmentQuestion @relation(fields: [questionId], references: [id])
 
-  submissionId String               @db.ObjectId
-  submission   AssessmentSubmission @relation(fields: [submissionId], references: [id])
-
-  answer        String?
-  marksObtained Int?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  answer                 String?
+  marksObtained          Int?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  assessmentSubmission   AssessmentSubmission? @relation(fields: [assessmentSubmissionId], references: [id])
+  assessmentSubmissionId String?               @db.ObjectId
 }
