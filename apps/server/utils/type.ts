@@ -232,3 +232,34 @@ export interface UpdateStudentBody {
   loginPassword?: string;
   batchId?: string;
 }
+export interface CreateAssessment {
+  name: string;
+  description: string;
+  instruction: string;
+  startTime: string;
+  endTime: string;
+  individualSectionTimeLimit?: number;
+  status?: "UPCOMING" | "LIVE" | "ENDED";
+  batchId: string;
+}
+export interface UpdateAssessment {
+  name?: string;
+  description?: string;
+  instruction?: string;
+  startTime?: string;
+  endTime?: string;
+  individualSectionTimeLimit?: number;
+  status?: "UPCOMING" | "LIVE" | "ENDED";
+  batchId?: string;
+}
+export interface CreateAssessmentSection {
+  name: string;
+  marksPerQuestion: number;
+  assessmentType: "CODE" | "NO_CODE";
+  assessmentId: string;
+}
+
+export interface UpdateAssessmentSection {
+  name?: string;
+  marksPerQuestion?: number;
+}
