@@ -5,10 +5,10 @@ import { X } from "lucide-react";
 
 type Props = {
   openForm: (value: boolean) => void;
-  onSubmit?: (data: VendorFormData) => void;
+  onSubmit?: (data: InstitutionFormData) => void;
 };
 
-type VendorFormData = {
+type InstitutionFormData = {
   name: string;
   email: string;
   secondaryEmail?: string;
@@ -22,9 +22,9 @@ type VendorFormData = {
 
 const TOTAL_STEPS = 3;
 
-export default function VendorForm({ openForm, onSubmit }: Props) {
+export default function InstitutionForm({ openForm, onSubmit }: Props) {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<VendorFormData>({
+  const [formData, setFormData] = useState<InstitutionFormData>({
     name: "",
     email: "",
     secondaryEmail: "",
@@ -35,7 +35,7 @@ export default function VendorForm({ openForm, onSubmit }: Props) {
     tagline: "",
     websiteLink: "",
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof VendorFormData, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof InstitutionFormData, string>>>({});
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,7 +62,7 @@ export default function VendorForm({ openForm, onSubmit }: Props) {
   };
 
   const validateStep = (currentStep: number): boolean => {
-    const newErrors: Partial<Record<keyof VendorFormData, string>> = {};
+    const newErrors: Partial<Record<keyof InstitutionFormData, string>> = {};
 
     if (currentStep === 1) {
       if (!formData.name.trim()) {
@@ -127,7 +127,7 @@ export default function VendorForm({ openForm, onSubmit }: Props) {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof VendorFormData]) {
+    if (errors[name as keyof InstitutionFormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
