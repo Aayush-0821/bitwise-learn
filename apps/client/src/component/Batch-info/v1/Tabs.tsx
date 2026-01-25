@@ -2,6 +2,7 @@
 
 import CourseForm from "@/component/general/CourseForm";
 import TeacherForm from "@/component/general/TeacherForm";
+import BatchStudentForm from "./BatchStudentForm";
 import { Plus, X } from "lucide-react";
 import { useRef, useState } from "react";
 import AssessmentsForm from "./AssessmentsForm";
@@ -13,17 +14,45 @@ import { uploadBatches } from "@/api/batches/create-batches";
 type TabsProps = {
   value: string;
   onValueChange: (value: string) => void;
+  batchId: string;
+  batchName: string;
+  institutionId: string;
+  onStudentCreated?: () => void;
 };
 
-const RenderComponent = ({ value }: { value: string }) => {
+const RenderComponent = ({
+  value,
+  batchId,
+  batchName,
+  institutionId,
+  onClose,
+  onStudentCreated,
+}: {
+  value: string;
+  batchId: string;
+  batchName: string;
+  institutionId: string;
+  onClose: (value?: boolean) => void;
+  onStudentCreated?: () => void;
+}) => {
   const params = useParams();
   const batchId = params.id as string;
 
   switch (value) {
     case "Teachers":
-      return <TeacherForm />;
+      return <TeacherForm openForm={onClose} institutionId={institutionId || ""} />;
     case "Students":
-      return <CreateStudent />;
+      return (
+        <BatchStudentForm
+          openForm={onClose}
+          batchId={batchId}
+          batchName={batchName}
+          institutionId={institutionId}
+          onSubmit={() => {
+            onStudentCreated?.();
+          }}
+        />
+      );
     case "Courses":
       return <CourseForm batchId={batchId} />;
     case "Assessments":
@@ -33,7 +62,14 @@ const RenderComponent = ({ value }: { value: string }) => {
   }
 };
 
-export const Tabs = ({ value, onValueChange }: TabsProps) => {
+export const Tabs = ({
+  value,
+  onValueChange,
+  batchId,
+  batchName,
+  institutionId,
+  onStudentCreated,
+}: TabsProps) => 
   const [addNew, setAddNew] = useState(false);
   const tabs = ["Students", "Teachers", "Assessments", "Courses"];
 
@@ -91,7 +127,14 @@ export const Tabs = ({ value, onValueChange }: TabsProps) => {
               <X />
             </button>
 
-            <RenderComponent value={value} />
+            <RenderComponent
+              value={value}
+              batchId={batchId}
+              batchName={batchName}
+              institutionId={institutionId}
+              onClose={() => setAddNew(false)}
+              onStudentCreated={onStudentCreated}
+            />
           </div>
         </div>
       )}
