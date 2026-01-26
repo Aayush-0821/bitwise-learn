@@ -18,7 +18,7 @@ interface Student {
 }
 
 interface StudentStore {
-  studentInfo: Student | null;
+  info: Student | null;
   setData: (data: Student) => void;
   logout: () => void;
 }
@@ -26,14 +26,14 @@ interface StudentStore {
 export const useStudent = create<StudentStore>()(
   persist(
     (set) => ({
-      studentInfo: null,
-      setData: (data) => set({ studentInfo: data }),
-      logout: () => set({ studentInfo: null }),
+      info: null,
+      setData: (data) => set({ info: data }),
+      logout: () => set({ info: null }),
     }),
     {
       name: "student-storage",
       partialize: (state) => ({
-        studentInfo: state.studentInfo, // persist ONLY data
+        info: state.info, // persist ONLY data
       }),
     },
   ),
