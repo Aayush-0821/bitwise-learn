@@ -17,10 +17,10 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(response.data.data, { status: 200 });
     } catch (error: any) {
-        console.error("Error fetching batches:", error.message);
+        console.error("Error fetching health:", error.message);
 
         return NextResponse.json(
-            { error: "Failed to fetch batches" },
+            { error: "Failed to fetch health" },
             { status: 500 },
         );
     }

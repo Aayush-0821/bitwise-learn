@@ -7,8 +7,8 @@ export interface Queue {
   connected: Boolean;
   connect: () => Promise<void>;
   registerNewChannel: (queueName: string) => Promise<amqp.Replies.AssertQueue>;
-  sendToQueue: (queueName: string, message: any) => Promise<void>;
+  sendToQueue: (queueName: string, message: any) => Promise<Boolean>;
   consumeFromQueue: (queueName: string, cb: HandlerCB) => Promise<void>;
 }
 
-export type HandlerCB = (msg: string) => any;
+export type HandlerCB = (msg: any) => any;

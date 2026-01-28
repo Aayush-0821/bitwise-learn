@@ -21,6 +21,15 @@ class RabbitMQ implements Queue {
       console.log(`Queue System configured`);
       console.log(`Initialising Queue Channel`);
       this.channel = await this.connection.createChannel();
+      this.connection.on("close", () => {
+        this.connected = false;
+        console.error("RabbitMQ connection closed");
+      });
+
+      this.connection.on("error", (err) => {
+        this.connected = false;
+        console.error("RabbitMQ connection error", err);
+      });
 
       this.connected = true;
       console.log(`Queue Channel Established`);
@@ -37,15 +46,11 @@ class RabbitMQ implements Queue {
       await this.connect();
     }
 
-    const existingQueue = await this.channel.checkQueue(queueName);
-    if (existingQueue) {
-      throw new Error("Active Queue by the name: " + queueName);
-    }
-
-    const createQueue = await this.channel.assertQueue(queueName);
-    return createQueue;
+    return this.channel.assertQueue(queueName, {
+      durable: true,
+    });
   }
-  async sendToQueue(queueName: string, message: any) {
+  async sendToQueue(queueName: string, message: any): Promise<Boolean> {
     if (!this.connected) {
       await this.connect();
     }
@@ -55,13 +60,18 @@ class RabbitMQ implements Queue {
     });
 
     try {
-      await this.channel.sendToQueue(
+      const res = await this.channel.sendToQueue(
         queueName,
         Buffer.from(JSON.stringify(message)),
+        { persistent: true },
       );
+
+      return res;
     } catch (error: any) {
       console.log("QUEUE_PUSH_ERROR:" + error);
     }
+
+    return true;
   }
   async consumeFromQueue(queueName: string, cb: HandlerCB) {
     if (!this.connected || !this.channel) {
@@ -83,7 +93,7 @@ class RabbitMQ implements Queue {
         }
 
         try {
-          const payload = msg.content.toString();
+          const payload = JSON.parse(msg.content.toString());
           await cb(payload);
 
           this.channel.ack(msg);

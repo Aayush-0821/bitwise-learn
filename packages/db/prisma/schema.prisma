@@ -251,7 +251,7 @@ model CourseAssignemntQuestion {
   options                     String[]
   correctAnswer               String[]
   assignmentId                String                       @db.ObjectId
-  assignment                  CourseAssignemnt             @relation(fields: [assignmentId], references: [id],onDelete: Cascade)
+  assignment                  CourseAssignemnt             @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   type                        ASSIGNMENT_TYPE              @default(SCQ)
   courseAssignemntSubmissions CourseAssignemntSubmission[]
   createdAt                   DateTime                     @default(now())
@@ -261,7 +261,7 @@ model CourseAssignemntQuestion {
 model CourseAssignemntSubmission {
   id            String                   @id @default(auto()) @map("_id") @db.ObjectId
   questionId    String                   @db.ObjectId
-  question      CourseAssignemntQuestion @relation(references: [id], fields: [questionId],onDelete: Cascade)
+  question      CourseAssignemntQuestion @relation(references: [id], fields: [questionId], onDelete: Cascade)
   studentId     String                   @db.ObjectId
   student       Student                  @relation(fields: [studentId], references: [id])
   answer        String[]
@@ -379,9 +379,9 @@ model Assessment {
   endTime                    DateTime
   individualSectionTimeLimit Int?
   status                     ASSESSMENT_STATUS @default(UPCOMING)
-
-  creatorId   String @db.ObjectId
-  creatorType String @default("ADMIN")
+  report                     String?
+  creatorId                  String            @db.ObjectId
+  creatorType                String            @default("ADMIN")
 
   batchId String @db.ObjectId
   batch   Batch  @relation(fields: [batchId], references: [id])
@@ -428,9 +428,9 @@ model AssessmentQuestion {
 model AssessmentSubmission {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  assessmentId String     @db.ObjectId
-  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-
+  assessmentId                  String                         @db.ObjectId
+  assessment                    Assessment                     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  tabSwitchCount                Int                            @default(0)
   studentId                     String                         @db.ObjectId
   student                       Student                        @relation(fields: [studentId], references: [id])
   studentIp                     String
