@@ -23,10 +23,12 @@ function V1AllInstitutions() {
     const toastId = toast.loading("Creating Institute...");
 
     try {
-      await createInstitution(data);
-
+      const res = await createInstitution(data);
       setAddNew(false);
       toast.success("Institute Created Successfully", { id: toastId });
+      await getAllInstitutions(setData);
+      setAddNew(false);
+      toast.success("Institute Created Successfully");
       await getAllInstitutions(setData);
     } catch (err: any) {
       toast.error(

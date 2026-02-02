@@ -245,7 +245,7 @@ export default function StudentLoginV1() {
           {step === "RESET" && (
             <ResetPasswordForm
               role={ROLE}
-              onSuccess={() => router.push("/student-login")}
+              onSuccess={() => window.location.reload()}
             />
           )}
         </motion.div>

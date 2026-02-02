@@ -62,7 +62,7 @@ function TestCases({
               setActiveCase(0);
             }}
             className={`
-              relative pb-1 text-sm font-medium transition
+              relative pb-1 text-sm font-medium transition cursor-pointer
               ${
                 mode === tab
                   ? `${Colors.text.primary}`
@@ -97,7 +97,7 @@ function TestCases({
                   onClick={() => setActiveCase(index)}
                   className={`
                     px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap
-                    transition
+                    transition cursor-pointer
                     ${
                       activeCase === index
                         ? `${Colors.background.heroSecondaryFaded} ${Colors.text.primary}`
@@ -284,25 +284,6 @@ function TestCases({
                           {o.actualOutput || "—"}
                         </pre>
                       </div>
-
-                      {/* Error */}
-                      {o.stderr && (
-                        <div>
-                          <p className={`mb-1 text-xs ${Colors.text.secondary}`}>
-                            Error
-                          </p>
-                          <pre
-                            className={`
-                              rounded-md p-2 font-mono text-sm
-                              ${Colors.background.secondary}
-                              ${Colors.border.specialThin}
-                              ${Colors.text.secondary}
-                            `}
-                          >
-                            {o.stderr}
-                          </pre>
-                        </div>
-                      )}
                     </div>
                   );
                 })()}
