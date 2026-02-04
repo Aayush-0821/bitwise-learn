@@ -273,7 +273,10 @@ class AssessmentController {
 
       if (req.user.type === "STUDENT") {
         const dbAssessment = await prismaClient.assessmentSubmission.findFirst({
-          where: { studentId: req.user.id },
+          where: {
+            studentId: req.user.id,
+            assessmentId: assessmentId as string,
+          },
         });
 
         if (dbAssessment) throw new Error("already submitted");
@@ -421,13 +424,17 @@ class AssessmentController {
       const dbAssessment = await prismaClient.assessment.findUnique({
         where: { id: assessmentId as string },
       });
-
+      console.log(dbAssessment);
       if (!dbAssessment) throw new Error("no such valid assessment found");
 
       if (dbAssessment.status !== "ENDED") {
         throw new Error("wait for test to end");
       }
       //TODO: Send the response to the queue
+      console.log(MQClient.connected);
+      console.log(MQClient.uri);
+
+      await MQClient.connect();
       await MQClient.registerNewChannel("assessment-report");
 
       const messageSent = await MQClient.sendToQueue(
