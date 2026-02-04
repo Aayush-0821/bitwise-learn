@@ -273,7 +273,10 @@ class AssessmentController {
 
       if (req.user.type === "STUDENT") {
         const dbAssessment = await prismaClient.assessmentSubmission.findFirst({
-          where: { studentId: req.user.id },
+          where: {
+            studentId: req.user.id,
+            assessmentId: assessmentId as string,
+          },
         });
 
         if (dbAssessment) throw new Error("already submitted");
