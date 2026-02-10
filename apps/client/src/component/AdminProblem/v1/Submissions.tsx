@@ -73,10 +73,12 @@ function Submissions({ content }: SubmissionsProps) {
     };
     console.log(content);
     await updateDescription(content.id as string, updatedData);
+
     setTimeout(() => {
       setIsSaving(false);
       setIsEditing(false);
     }, 500);
+    window.location.reload();
   };
 
   return (

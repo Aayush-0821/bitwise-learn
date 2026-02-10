@@ -14,6 +14,7 @@ const languageOptions = [
   { label: "Python", value: "python" },
   { label: "Java", value: "java" },
   { label: "C++", value: "cpp" },
+  { label: "C", value: "c" },
 ];
 
 const normalizeLanguage = (lang: string) => lang.toLowerCase();
@@ -33,7 +34,7 @@ export default function CodeEditor({
 }) {
   const Colors = useColors();
   const theme = useTheme();
-
+  console.log(template);
   const templatesByLanguage = useMemo(() => {
     const map: Record<string, any> = {};
     template?.forEach((t) => {

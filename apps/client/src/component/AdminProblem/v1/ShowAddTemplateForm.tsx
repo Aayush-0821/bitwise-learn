@@ -23,13 +23,13 @@ const DEFAULT_CODE_MAP: Record<string, string> = {
     "#include <bits/stdc++.h>\n" +
     "using namespace std;\n\n" +
     "class Solution {\n" +
-    "public:\n" +
+    "\tpublic:\n" +
     "    \n" +
     "};",
 
   JAVASCRIPT: "class Solution {\n" + "    \n" + "}",
 
-  C: "#include <stdio.h>\n\n" + "int main() {\n" + "    return 0;\n" + "}",
+  C: "",
 };
 
 const FUNCTONBODY_MAP: Record<string, string> = {
@@ -103,6 +103,7 @@ function ShowAddTemplateForm({ onClose, onSave }: Props) {
     };
 
     onSave?.(payload);
+    window.location.reload();
     onClose();
   };
 
