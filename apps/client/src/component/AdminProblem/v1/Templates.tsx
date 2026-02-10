@@ -105,6 +105,7 @@ function Templates() {
 
                 setCodeMap(defaultCodes);
                 setFunctionBodyMap(functionBodies);
+                window.location.reload();
               }, param.id as string);
             }}
           />
