@@ -73,7 +73,6 @@ class CourseEnrollment {
       const courseId = req.body.courses;
       const batchId = req.body.batchId;
 
-      console.log(req.body);
       if (!courseId) throw new Error("course id is required");
       if (!batchId) throw new Error("institute id is required");
 
@@ -131,7 +130,7 @@ class CourseEnrollment {
 
       const dbEnrollement = await prismaClient.courseEnrollment.findUnique({
         where: {
-          id: enrollmentId,
+          id: enrollmentId as string,
         },
       });
       console.log("DB ENROLLMENT IS", dbEnrollement);

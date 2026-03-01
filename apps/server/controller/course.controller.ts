@@ -261,11 +261,16 @@ class CoursesController {
       const userId = req.user.id;
 
       if (!userId) throw new Error("userId is required");
-
-      const dbAdmin = await prismaClient.user.findFirst({
-        where: { id: userId },
-      });
-
+      let dbAdmin;
+      if (req.user.type === "ADMIN" || req.user?.type === "SUPERADMIN") {
+        dbAdmin = await prismaClient.user.findUnique({
+          where: { id: userId },
+        });
+      } else {
+        dbAdmin = await prismaClient.vendor.findUnique({
+          where: { id: userId },
+        });
+      }
       if (!dbAdmin) throw new Error("no such user found!");
 
       const courses = await prismaClient.course.findMany({});
@@ -628,27 +633,21 @@ class CoursesController {
       return res.status(200).json(apiResponse(500, error.message, null));
     }
   }
-  async getAllListedCourses(req:Request,res:Response){
+  async getAllListedCourses(req: Request, res: Response) {
     try {
       const courses = await prismaClient.course.findMany({
-        where:{
-          isPublished:"PUBLISHED"
-        }
+        where: {
+          isPublished: "PUBLISHED",
+        },
       });
-  
-      if(courses.length === 0){
-        return res
-        .status(200)
-        .json(apiResponse(200,"No Courses Yet !",null));
+
+      if (courses.length === 0) {
+        return res.status(200).json(apiResponse(200, "No Courses Yet !", null));
       }
-      return res
-      .status(200)
-      .json(apiResponse(200,"Courses : ",courses));
-    } catch (error:any) {
+      return res.status(200).json(apiResponse(200, "Courses : ", courses));
+    } catch (error: any) {
       console.log(error);
-      return res
-      .status(200)
-      .json(apiResponse(500,error.message,null));
+      return res.status(200).json(apiResponse(500, error.message, null));
     }
   }
 }
