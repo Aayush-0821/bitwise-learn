@@ -277,7 +277,7 @@ function TestCases({
 ${o.isCorrect ? "text-green-400" : "text-red-400"}
                           `}
                           >
-                            {o.actualOutput || "—"}
+                            {o.actualOutput || o.stderr || "—"}
                           </pre>
                         </div>
                       </div>
