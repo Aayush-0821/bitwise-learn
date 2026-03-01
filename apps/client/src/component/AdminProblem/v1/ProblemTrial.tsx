@@ -24,6 +24,7 @@ function ProblemTrial({ data }: { data: any }) {
         <div style={{ flex: `${editorRatio} 0 0` }} className="min-h-0">
           <CodeEditor
             setTab={setTab}
+            showSubmit={false}
             questionId={data.id}
             output={setOutput}
             template={data.problemTemplates}

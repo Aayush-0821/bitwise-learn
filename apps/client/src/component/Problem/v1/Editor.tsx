@@ -25,12 +25,14 @@ export default function CodeEditor({
   output: setOutput,
   customSubmit,
   setTab,
+  showSubmit = true,
 }: {
   template: any[];
   questionId: string;
   output: any;
   customSubmit?: (language: string, code: string) => void;
   setTab: any;
+  showSubmit: boolean;
 }) {
   const Colors = useColors();
   const theme = useTheme();
@@ -191,6 +193,7 @@ export default function CodeEditor({
               flex items-center gap-2 rounded-md px-2 py-1
               ${Colors.background.secondary}
               ${Colors.border.fadedThin}
+              ${Colors.text.primary}
             `}
           >
             <Timer
@@ -207,7 +210,7 @@ export default function CodeEditor({
 
                 <RotateCcw
                   size={14}
-                  className="cursor-pointer"
+                  className={"cursor-pointer" + `${Colors.text.primary}`}
                   onClick={resetTimer}
                 />
 
@@ -249,18 +252,20 @@ export default function CodeEditor({
           </div>
 
           <div className="relative group">
-            <button
-              onClick={handleSubmit}
-              className={`
+            {showSubmit && (
+              <button
+                onClick={handleSubmit}
+                className={`
       flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium
       ${Colors.background.heroPrimary}
       ${Colors.text.black}
       hover:opacity-90 transition cursor-pointer
     `}
-            >
-              <Send size={14} />
-              Submit
-            </button>
+              >
+                <Send size={14} />
+                Submit
+              </button>
+            )}
 
             <div
               className={`

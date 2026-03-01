@@ -97,17 +97,16 @@ class CodeRunnerController {
         });
       }
       if (
-        req.user?.type === "ADMIN" ||
-        (req.user?.type === "SUPERADMIN" && allPassed)
+        (req.user?.type === "ADMIN" || req.user?.type === "SUPERADMIN") &&
+        allPassed
       ) {
+        console.log("executing code");
         const hiddenTestCases = await prismaClient.problemTestCase.findMany({
           where: {
             problemId: dbProblem.id,
             testType: "HIDDEN",
           },
         });
-
-        const outputArray: any[] = [];
 
         for (const testcase of hiddenTestCases) {
           const result = await CodeExecution.compileDsaProblem(
@@ -122,6 +121,7 @@ class CodeRunnerController {
 
           const isCorrect =
             execStatus.verdict === "SUCCESS" && actualOutput === expectedOutput;
+          console.log("hidden testcase is correct or not : ", isCorrect);
 
           if (!isCorrect) {
             allPassed = false;
@@ -130,12 +130,14 @@ class CodeRunnerController {
               expectedOutput: testcase.output,
               actualOutput: result?.run?.stdout || "",
               stderr: result?.run?.stderr || "",
-              isCorrect,
+              isCorrect: false,
             });
             break;
           }
         }
       }
+
+      console.log(outputArray);
       return res.status(200).json(
         apiResponse(200, "success", {
           allPassed,

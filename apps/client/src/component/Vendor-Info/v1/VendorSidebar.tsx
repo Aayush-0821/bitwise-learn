@@ -1,5 +1,5 @@
 import { use, useEffect, useState } from "react";
-import { Pencil, Save, X, Trash } from "lucide-react";
+import { Pencil, Save, X, Trash, ArrowLeft } from "lucide-react";
 import InfoBlock from "./InfoBlock";
 import { deleteEntity, updateEntity } from "@/api/institutions/entity";
 import { useRouter } from "next/navigation";
@@ -103,8 +103,17 @@ const VendorSidebar = ({ vendor, onUpdate, onDelete }: VendorSidebarProps) => {
   };
 
   return (
-    <aside className={`w-[320px] ${Colors.background.secondary} ${Colors.text.primary} p-6 rounded-xl min-h-[93vh]`}>
+    <aside
+      className={`w-[320px] ${Colors.background.secondary} ${Colors.text.primary} p-6 rounded-xl min-h-[93vh]`}
+    >
       {/* Header */}
+      <div
+        onClick={() => router.back()}
+        className="flex gap-3 mb-4 cursor-pointer"
+      >
+        <ArrowLeft className="text-gray-400 text-md" />
+        <span>Go Back</span>
+      </div>
       <div className="mb-4">
         {isEditing ? (
           <InputField
@@ -128,7 +137,9 @@ const VendorSidebar = ({ vendor, onUpdate, onDelete }: VendorSidebarProps) => {
           />
         </>
       ) : (
-        <p className={`text-sm ${Colors.text.secondary} mb-6`}>{vendor.tagline || "—"}</p>
+        <p className={`text-sm ${Colors.text.secondary} mb-6`}>
+          {vendor.tagline || "—"}
+        </p>
       )}
 
       {/* Content */}
