@@ -125,7 +125,7 @@ function TestCases({
                   <p className={`mb-1 text-xs ${Colors.text.secondary}`}>
                     Input
                   </p>
-                  <div
+                  <pre
                     className={`
                       rounded-lg p-3 space-y-1 font-mono text-sm
                       ${Colors.background.primary}
@@ -134,7 +134,7 @@ function TestCases({
                     `}
                   >
                     {currentTest.input}
-                  </div>
+                  </pre>
                 </div>
 
                 {/* Expected Output */}
@@ -231,7 +231,7 @@ function TestCases({
                           >
                             Input
                           </p>
-                          <div
+                          <pre
                             className={`
                             rounded-md p-2 font-mono text-sm
                             ${Colors.background.secondary}
@@ -240,7 +240,7 @@ function TestCases({
                           `}
                           >
                             {parsedInput}
-                          </div>
+                          </pre>
                         </div>
 
                         {/* Expected */}
