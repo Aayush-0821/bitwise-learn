@@ -63,9 +63,9 @@ export default function TestCaseSection({ testCases }: { testCases: any[] }) {
                   Input
                 </div>
 
-                <code className="p-4 space-y-1 font-mono text-sm">
+                <pre className="p-4 space-y-1 font-mono text-sm">
                   {parsedInput}
-                </code>
+                </pre>
               </div>
 
               {/* Output */}

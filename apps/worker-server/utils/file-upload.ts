@@ -1,22 +1,35 @@
-import { v2 as cloudinary } from "cloudinary";
-import path from "path";
+import { S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+const accessKeyId = process.env.AWS_ACCESS_KEY_ID!;
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY!;
+const region = process.env.AWS_S3_REGION;
+const Bucket = process.env.AWS_S3_BUCKET;
+
+export const s3 = new S3Client({
+  region: region,
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
 });
 
-export async function uploadToCloudinary(filePath: string) {
-  const result = await cloudinary.uploader.upload(filePath, {
-    resource_type: "raw",
-    folder: "assessment-reports",
-    use_filename: true,
-    unique_filename: false,
-  });
+export default async function uploadFile(file: any): Promise<string | null> {
+  try {
+    const key = `${file.originalname}`;
 
-  return {
-    url: result.secure_url,
-    publicId: result.public_id,
-  };
+    const command = new PutObjectCommand({
+      Bucket: Bucket,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+
+    const data = await s3.send(command);
+    console.log(data);
+    return `https://${Bucket}.s3.${region}.amazonaws.com/${key}`;
+  } catch (error) {
+    console.error("UPLOAD FAILED:", error);
+    return null;
+  }
 }

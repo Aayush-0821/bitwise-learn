@@ -5,7 +5,9 @@ export async function endAssessment() {
     where: {
       status: "LIVE",
       endTime: {
-        lte: new Date(),
+        lte: new Date().toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+        }),
       },
     },
     data: {
@@ -18,7 +20,9 @@ export async function startAssessment() {
     where: {
       status: "UPCOMING",
       endTime: {
-        gte: new Date(),
+        gte: new Date().toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+        }),
       },
     },
     data: {

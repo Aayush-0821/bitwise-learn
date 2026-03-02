@@ -12,10 +12,12 @@ class AssessmentController {
       if (!data) throw new Error("Please provide all fields");
       if (req.user.type === "STUDENT")
         throw new Error("User Not Authorized to create Assessments");
-      const startTime = new Date(data.startTime);
-      const endTime = new Date(data.endTime);
-      if (isNaN(startTime.getTime()) || isNaN(endTime.getTime()))
-        throw new Error("Invalid startTime or endTime");
+      const startTime = new Date(data.startTime).toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+      });
+      const endTime = new Date(data.endTime).toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+      });
 
       const createdAssessment = await prismaClient.assessment.create({
         data: {

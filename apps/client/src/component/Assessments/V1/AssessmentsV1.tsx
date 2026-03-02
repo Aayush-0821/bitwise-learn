@@ -91,8 +91,13 @@ const AssessmentCard = ({ assessment }: { assessment: CreateAssessment }) => {
       <div className="flex items-center gap-2 text-xs text-secondary-font">
         <Clock size={14} />
         <span>
-          {new Date(assessment.startTime).toLocaleString()} —{" "}
-          {new Date(assessment.endTime).toLocaleString()}
+          {new Date(assessment.startTime).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+          })}{" "}
+          —{" "}
+          {new Date(assessment.endTime).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+          })}
         </span>
       </div>
 
@@ -205,7 +210,13 @@ const AddAssessmentModal = ({
 
   if (!open) return null;
 
-  const combineDateTime = (d: string, t: string) => (d && t ? `${d}T${t}` : "");
+  const combineDateTimeToUTC = (date: string, time: string) => {
+    if (!date || !time) return "";
+    // Create a string with IST offset
+    const dateTimeIST = `${date}T${time}:00+05:30`;
+    // Convert to UTC date string
+    return new Date(dateTimeIST).toISOString();
+  };
 
   const clearError = (field: string) => {
     if (errors[field]) {
@@ -230,10 +241,11 @@ const AddAssessmentModal = ({
   const handleSubmit = () => {
     const payload = {
       ...form,
-      startTime: combineDateTime(startDate, startClock),
-      endTime: combineDateTime(endDate, endClock),
+      startTime: combineDateTimeToUTC(startDate, startClock),
+      endTime: combineDateTimeToUTC(endDate, endClock),
     };
 
+    console.log(payload);
     const newErrors: Record<string, string> = {};
 
     if (!payload.name.trim()) newErrors.name = "Assessment name is required";
