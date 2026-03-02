@@ -172,11 +172,15 @@ function AllAssessments() {
                   </td>
 
                   <td className={`px-4 py-3 ${Colors.text.secondary}`}>
-                    {new Date(assessment.startTime).toLocaleString()}
+                    {new Date(assessment.startTime)
+                      .toUTCString()
+                      .replace("GMT", "")}
                   </td>
 
                   <td className={`px-4 py-3 ${Colors.text.secondary}`}>
-                    {new Date(assessment.endTime).toLocaleString()}
+                    {new Date(assessment.endTime)
+                      .toUTCString()
+                      .replace("GMT", "")}
                   </td>
 
                   <td className={`px-4 py-3 ${Colors.text.secondary}`}>

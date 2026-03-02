@@ -92,8 +92,8 @@ const AssessmentCard = ({ assessment }: { assessment: CreateAssessment }) => {
       <div className="flex items-center gap-2 text-xs text-secondary-font">
         <Clock size={14} />
         <span>
-          {new Date(assessment.startTime).toLocaleString()} —{" "}
-          {new Date(assessment.endTime).toLocaleString()}
+          {new Date(assessment.startTime).toUTCString()} —{" "}
+          {new Date(assessment.endTime).toUTCString()}
         </span>
       </div>
 
@@ -560,6 +560,7 @@ const AssessmentsV1 = () => {
       let res: any;
       if (logsRole != null && logsRole < 3) {
         res = await getAllAssessments();
+        console.log(res.data);
         setAssessments(res.data || []);
       } else {
         res = await getAssessmentsByInstitution((data: any) => {
