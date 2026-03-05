@@ -1,3 +1,4 @@
+"use client";
 import { Tabs, TabsContent, TabsList } from "@/component/ui/tabs";
 import { TabsTrigger } from "@radix-ui/react-tabs";
 import AllAssessments from "./AllAssessments";
